@@ -19,8 +19,14 @@ public class Node implements Comparable<Node> {
 	public Node (Node leftChild, Node rightChild) {
 		this.isLetter = false;
 		this.value = leftChild.value + rightChild.value;
-		this.leftChild = leftChild;
-		this.rightChild = rightChild;
+		if (leftChild.value > rightChild.value){
+			this.leftChild = leftChild;
+			this.rightChild = rightChild;
+		} else {
+			this.leftChild = rightChild;
+			this.rightChild = leftChild;
+		}
+		
 	}
 	
 	public Node getLeftChild(){
