@@ -6,12 +6,18 @@ import java.util.Scanner;
 
 public class Huffman {
 
+	private static Scanner reader;
+
 	public static void main(String[] args){
 		System.out.println("input your language");
-		Scanner reader = new Scanner(System.in);
+		reader = new Scanner(System.in);
 		String userInput1 = reader.nextLine();
 
 		//System.out.println(userInput1);
+		if (userInput1.equals("x")){
+			System.out.println("Goodbye! :)");
+			return;
+		}
 
 		ArrayList<String> input = new ArrayList<String>();
 		String[] args1 = userInput1.split(" ");
@@ -27,7 +33,7 @@ public class Huffman {
 		Node tree = constructTree(nodes);
 		//System.out.println(tree.toString());
 		//Get encoding for each input and dump in Hashmap
-		HashMap coding = new HashMap();
+		HashMap<String, String> coding = new HashMap<String, String>();
 		for (String letter : letters){
 			coding.put(letter, getCode(tree, letter, ""));
 		}
@@ -41,18 +47,62 @@ public class Huffman {
 				input2.add(arg);
 			}
 			if (input2.get(0).equals("e")){
-				System.out.println("encoding");
+				Object encodedString = encode(input2.get(1), coding);
+				System.out.println("encoding: " + encodedString);
 
 			} else if (input2.get(0).equals("d")){
-				System.out.println("decoding");
+				Object decodedString = decode(input2.get(1), coding);
+				System.out.println("decoding: " + decodedString);
 
 			} else if (input2.get(0).equals("x")){
+				System.out.println("Goodbye! :)");
 				break;
 			} else {
 				System.out.println("invalid input, start over");
 			}
 
 		}
+	}
+
+
+
+	private static String decode(String word, HashMap<String, String> coding) {
+		String encodedString = "";
+		while (word.length() > 0){
+			for (int i = 1; i < word.length() + 1; i++){
+				if (coding.containsValue(word.substring(0, i))) {
+					encodedString += getkey(word.substring(0, i), coding);		
+					word = word.substring(i);
+				}
+			}
+		}
+		return encodedString;
+
+	}
+
+
+
+	private static String getkey(String substring, HashMap<String, String> coding) {
+		Object[] keys = coding.keySet().toArray();
+		for (Object key : keys) {
+			if (coding.get(key).equals(substring)) {
+				return (String) key;
+			}
+		}
+		return null;
+	}
+
+
+
+	private static String encode(String word, HashMap<String, String> coding) {
+		String encodedString = "";
+		for (String letter : word.split("")){
+			if (coding.containsKey(letter)){
+				encodedString += coding.get(letter);
+			}
+		}
+		return encodedString;
+
 	}
 
 
